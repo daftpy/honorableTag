@@ -19,11 +19,11 @@ class GraphicsView(QGraphicsView):
         self.prev_pos = None
         self.selected_class = None
 
-
     def mouseMoveEvent(self, event):
         # Update mouse positions and update the viewport
         # to draw our crosshairs
         self.mouse_view_pos = event.pos()
+        # Emit mouse pos relative to scene to gui for tracking
         self.mouse_scene_pos = self.mapToScene(event.pos())
         self.mouse_pos_signal.emit(
             self.mouse_scene_pos.x(),
@@ -37,7 +37,7 @@ class GraphicsView(QGraphicsView):
         # Set the prev_pos so we can start rendering a temp rec
         # for more accurate drawing for the user
         if event.button() == Qt.LeftButton:
-            self.prev_pos = self.mapToScene(event.pos())
+            self.prev_pos = event.pos()
 
     def mouseReleaseEvent(self, event):
         # Reset the prev_pos so we stop drawing the temp rec
@@ -45,6 +45,7 @@ class GraphicsView(QGraphicsView):
         if event.button() == Qt.LeftButton:
             # Makes sure prev_pos is set before
             if self.prev_pos:
+                self.prev_pos = self.mapToScene(self.prev_pos)
                 new_rect = QRect(
                     self.prev_pos.toPoint(), self.mapToScene(event.pos()).toPoint()
                 )
@@ -76,9 +77,5 @@ class GraphicsView(QGraphicsView):
         
         if self.prev_pos:
             painter.drawRect(QRect(
-                self.prev_pos.toPoint(), self.mouse_scene_pos.toPoint()
+                self.prev_pos, self.mouse_view_pos
             ))
-
-    def update_selected_class(self, selected_class):
-        self.selected_class = selected_class
-        

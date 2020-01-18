@@ -46,6 +46,3 @@ class GraphicsScene(QGraphicsScene):
             [new_rect, selected_class[0], selected_class[1]]
         )
         self.update()
-
-    def mouseMoveEvent(self, event):
-        print(event)

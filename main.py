@@ -101,7 +101,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         class_name = class_label.text().split(' - ')
         selected_class = (class_name[0], class_label.color)
         self.FrameView.selected_class = selected_class
-        print(self.FrameView.selected_class)
 
 
 app = QApplication(sys.argv)

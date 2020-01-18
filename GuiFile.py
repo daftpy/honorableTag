@@ -84,6 +84,7 @@ class Ui_MainWindow(object):
         self.FrameView.setMouseTracking(True)
         self.FrameView.setDragMode(QtWidgets.QGraphicsView.NoDrag)
         self.FrameView.setTransformationAnchor(QtWidgets.QGraphicsView.AnchorUnderMouse)
+        self.FrameView.setResizeAnchor(QtWidgets.QGraphicsView.NoAnchor)
         self.FrameView.setObjectName("FrameView")
         self.gridLayout_4.addWidget(self.FrameView, 0, 0, 1, 8)
         spacerItem3 = QtWidgets.QSpacerItem(20, 10, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)

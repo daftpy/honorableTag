@@ -21,7 +21,6 @@ class GraphicsView(QGraphicsView):
 
     def mouseMoveEvent(self, event):
         # Update mouse positions and update the viewport
-        # to draw our crosshairs
         self.mouse_view_pos = event.pos()
         # Emit mouse pos relative to scene to gui for tracking
         self.mouse_scene_pos = self.mapToScene(event.pos())
@@ -29,13 +28,26 @@ class GraphicsView(QGraphicsView):
             self.mouse_scene_pos.x(),
             self.mouse_scene_pos.y()
         )
+        if event.buttons() == Qt.MidButton: # or Qt.MiddleButton
+            offset = self.prev_pos - event.pos() # get the offset
+            self.prev_pos = event.pos()
+            # Move the scene via the scrollbars
+            self.verticalScrollBar().setValue(
+                self.verticalScrollBar().value() + offset.y()
+            )
+            self.horizontalScrollBar().setValue(
+                self.horizontalScrollBar().value() + offset.x()
+            )
+        else:
+            super().mouseMoveEvent(event)
         # Update the viewport on the GraphicsView to trigger
         # paint event for the crosshairs
         self.viewport().update()
 
     def mousePressEvent(self, event):
+        if event.button() == Qt.MidButton: # or Qt.MiddleButton
+            self.prev_pos = event.pos()
         # Set the prev_pos so we can start rendering a temp rec
-        # for more accurate drawing for the user
         if event.button() == Qt.LeftButton:
             self.prev_pos = event.pos()
 
@@ -45,13 +57,22 @@ class GraphicsView(QGraphicsView):
         if event.button() == Qt.LeftButton:
             # Makes sure prev_pos is set before
             if self.prev_pos:
+                # Map the pos to the scene before rendering
                 self.prev_pos = self.mapToScene(self.prev_pos)
                 new_rect = QRect(
-                    self.prev_pos.toPoint(), self.mapToScene(event.pos()).toPoint()
+                    self.prev_pos.toPoint(), # Round our pos to whole numbers
+                    self.mapToScene(event.pos()).toPoint() 
                 )
                 self.DrawScene.new_rect(new_rect, self.selected_class)
                 self.prev_pos = None
+        if event.button() == Qt.MidButton:
+            self.prev_pos = None
         self.viewport().update()
+
+    def wheelEvent(self, event):
+        # Scroll zoom mechanism
+        adj = (event.angleDelta().y()) * 0.001
+        self.scale(1+adj,1+adj)
 
     def paintEvent(self, event):
         super().paintEvent(event)

@@ -4,8 +4,8 @@ from PyQt5.QtCore import Qt, pyqtSignal
 
 
 class GraphicsScene(QGraphicsScene):
-    bbox_rect = pyqtSignal([list])
     current_frame_signal = pyqtSignal(int)
+
     def __init__(self, *args, **kwargs):
         super(QGraphicsScene, self).__init__(*args, **kwargs)
         self.frame_array = None

@@ -1,8 +1,10 @@
 import sys
 import copy
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidgetItem
+from PyQt5.QtCore import Qt
 from GuiFile import Ui_MainWindow
 from helpers.file_helpers import load_video_file, load_class_data
+from gui.ClassLabel import ClassLabel
 
 class MainWindow(QMainWindow, Ui_MainWindow):
 
@@ -42,6 +44,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         )
         self.FrameView.DrawScene.current_frame_signal.connect(
             self.update_current_frame_display
+        )
+        self.FrameView.DrawScene.new_tag_signal.connect(
+            self.update_tags_list
         )
 
     def load_video(self):
@@ -83,6 +88,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.CurrentFrameLabel.setText(
             f'{n+1}/{len(self.FrameView.DrawScene.frame_array)}'
         )
+        self.TagsFrameList.clear()
         
 
     def step_forward(self, n):
@@ -101,6 +107,28 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         class_name = class_label.text().split(' - ')
         selected_class = (class_name[0], class_label.color)
         self.FrameView.selected_class = selected_class
+
+    def update_tags_list(self, rect):
+        # Add rect to tags in frame list
+        exists = self.TagsFrameList.findItems(
+            f'{rect[1][0]}, {str(rect[0].getRect())}', Qt.MatchExactly
+        )
+        if len(exists) == 0:
+            self.TagsFrameList.addItem(
+                ClassLabel(
+                    class_label=str(rect[1]),
+                    color=(rect[2].name()),
+                    rect=(rect[0].getRect())
+                )
+            )
+        # If frame is not in the TaggedFrameList already, add it
+        exists = self.TaggedFrameList.findItems(
+            f'Frame: {self.FrameView.DrawScene.current_frame + 1}', Qt.MatchExactly
+        )
+        if len(exists) == 0:
+            self.TaggedFrameList.addItem(
+                QListWidgetItem(f'Frame: {self.FrameView.DrawScene.current_frame + 1}')
+            )
 
 
 app = QApplication(sys.argv)

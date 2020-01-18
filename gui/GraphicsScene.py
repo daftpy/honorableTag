@@ -1,12 +1,13 @@
 from sqlite3 import IntegrityError
 from PyQt5.QtWidgets import QGraphicsScene
 from PyQt5.QtGui import QImage, QPen, QPixmap, QColor
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import Qt, pyqtSignal, QRect
 from SqlStorage import SqlStorage
 
 
 class GraphicsScene(QGraphicsScene):
     current_frame_signal = pyqtSignal(int)
+    new_tag_signal = pyqtSignal(list)
 
     def __init__(self, *args, **kwargs):
         super(QGraphicsScene, self).__init__(*args, **kwargs)
@@ -65,18 +66,32 @@ class GraphicsScene(QGraphicsScene):
         self.rect_list.append(
             [new_rect, selected_class[0], selected_class[1]]
         )
+        # selected_class[0], class label selected_class[1] color
+        self.new_tag_signal.emit([new_rect, selected_class[0], selected_class[1]])
         self.update()
 
     def load_rects(self):
+        # Information is from the SQL query, so load them into widgets
         rects = self.sql_storage.get_rects(self.current_frame)
         if rects:
             for rect in rects:
+                loaded_rect = QRect(
+                    rect[2],
+                    rect[3],
+                    rect[4],
+                    rect[5]
+                )
+
                 # Set pen color
                 pen = QPen(QColor(rect[6]), 2, Qt.DashLine)
                 self.addRect(
-                    rect[2], # x
-                    rect[3], # y
-                    rect[4], # width
-                    rect[5], # height
+                    rect[2],
+                    rect[3],
+                    rect[4],
+                    rect[5],
                     pen
                 )
+                # Load the rect color from the sql query
+                color = QColor(rect[6])
+                # rect[1] is class label
+                self.new_tag_signal.emit([loaded_rect, rect[1], color])

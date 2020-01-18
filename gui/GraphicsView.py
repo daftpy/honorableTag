@@ -64,6 +64,7 @@ class GraphicsView(QGraphicsView):
                     self.prev_pos.toPoint(), # Round our pos to whole numbers
                     self.mapToScene(event.pos()).toPoint() 
                 )
+                # Draw the rect
                 self.DrawScene.new_rect(new_rect, self.selected_class)
                 self.prev_pos = None
         if event.button() == Qt.MidButton:

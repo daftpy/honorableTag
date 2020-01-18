@@ -6,6 +6,7 @@ from gui.GraphicsScene import GraphicsScene
 
 class GraphicsView(QGraphicsView):
     mouse_pos_signal = pyqtSignal(int, int)
+
     def __init__(self, parent=None):
         super(GraphicsView, self).__init__(parent)
         # Create and set scene

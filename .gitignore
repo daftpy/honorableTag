@@ -1,0 +1,5 @@
+*.mp4
+test.names
+*.pyc
+__pycache__
+gui/__pycache__

@@ -1,5 +1,5 @@
 import sys
-import copy
+import re
 from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidgetItem
 from PyQt5.QtCore import Qt
 from GuiFile import Ui_MainWindow
@@ -37,6 +37,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             )
         )
         self.ClassLabelList.itemClicked.connect(self.select_class)
+        self.TaggedFrameList.itemClicked.connect(self.get_tagged_frame)
 
         # Set up signals essential for updating the gui
         self.FrameView.mouse_pos_signal.connect(
@@ -128,10 +129,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         exists = self.TaggedFrameList.findItems(
             f'Frame: {self.FrameView.DrawScene.current_frame + 1}', Qt.MatchExactly
         )
+        print('exists?', exists)
         if len(exists) == 0:
             self.TaggedFrameList.addItem(
                 QListWidgetItem(f'Frame: {self.FrameView.DrawScene.current_frame + 1}')
             )
+        # Order items in TaggedFrameList
+        exists = self.TaggedFrameList.findItems(
+            'Frame:', Qt.MatchContains
+        )
+        frame_list = [str(frame_title.text()) for frame_title in exists]
+        ordered_frame_list = sorted(frame_list, key=lambda h: int(h[7:]))
+        self.TaggedFrameList.clear()
+        self.TaggedFrameList.addItems(ordered_frame_list)
 
     def remove_from_tags_list(self, rect):
         # Find the tag in the TagsFrameList by finding the rect shape
@@ -152,6 +162,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 item = self.TaggedFrameList.row(exists[0])
                 self.TaggedFrameList.takeItem(item)
 
+    def get_tagged_frame(self, frame_item):
+        frame = int(re.search(r'\d+', frame_item.text()).group()) - 1
+        self.FrameView.DrawScene.get_frame(frame)
 
 app = QApplication(sys.argv)
 window = MainWindow()

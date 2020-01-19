@@ -49,7 +49,7 @@ class GraphicsScene(QGraphicsScene):
             self.current_frame_signal.emit(n) # Emit current frame to the gui
             self.clear()
             self.addPixmap(QPixmap(q_image))
-            self.load_rects()
+            self.load_rects() # Load any rects that should be in the scene
             self.update()
 
     def new_rect(self, new_rect, selected_class):

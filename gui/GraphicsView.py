@@ -6,7 +6,7 @@ from gui.GraphicsScene import GraphicsScene
 
 class GraphicsView(QGraphicsView):
     mouse_pos_signal = pyqtSignal(int, int)
-
+    remove_rect_signal = pyqtSignal(QRect)
     def __init__(self, parent=None):
         super(GraphicsView, self).__init__(parent)
         # Create and set scene
@@ -47,18 +47,34 @@ class GraphicsView(QGraphicsView):
 
     def mousePressEvent(self, event):
         if event.button() == Qt.MidButton: # or Qt.MiddleButton
+            # Set pos used for moving around the pixmap
             self.prev_pos = event.pos()
         # Set the prev_pos so we can start rendering a temp rec
-        if event.button() == Qt.LeftButton:
+        elif event.button() == Qt.LeftButton:
             self.prev_pos = event.pos()
+
+        elif event.button() == Qt.RightButton:
+            item = self.itemAt(
+                event.pos()
+            )
+            if not hasattr(item, 'pixmap'):
+                rect = item.rect()
+                rect = rect.toRect() # convert the QRectF to a normal QRect
+                self.DrawScene.sql_storage.remove_rect(rect)
+                for row in self.DrawScene.rect_list:
+                    # Find the row(list) that contains the rect
+                    if rect in row:
+                        # Remove from rect_list to not save it on get_frame
+                        self.DrawScene.rect_list.remove(row)
+                self.remove_rect_signal.emit(rect)
+                item = self.DrawScene.removeItem(item)
 
     def mouseReleaseEvent(self, event):
         # Reset the prev_pos so we stop drawing the temp rec
         # and render the new rect
         if event.button() == Qt.LeftButton:
-            # Makes sure prev_pos is set before
             if self.prev_pos:
-                # Map the pos to the scene before rendering
+                # Map the pos to the scene before rendering for accurate pos
                 self.prev_pos = self.mapToScene(self.prev_pos)
                 new_rect = QRect(
                     self.prev_pos.toPoint(), # Round our pos to whole numbers
@@ -99,6 +115,7 @@ class GraphicsView(QGraphicsView):
             )
         
         if self.prev_pos:
+            # Draw temporary rect for accurate placement
             painter.drawRect(QRect(
                 self.prev_pos, self.mouse_view_pos
             ))

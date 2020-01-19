@@ -48,6 +48,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.FrameView.DrawScene.new_tag_signal.connect(
             self.update_tags_list
         )
+        self.FrameView.remove_rect_signal.connect(
+            self.remove_from_tags_list
+        )
 
     def load_video(self):
         try:
@@ -129,6 +132,25 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.TaggedFrameList.addItem(
                 QListWidgetItem(f'Frame: {self.FrameView.DrawScene.current_frame + 1}')
             )
+
+    def remove_from_tags_list(self, rect):
+        # Find the tag in the TagsFrameList by finding the rect shape
+        exists = self.TagsFrameList.findItems(
+            f'({rect.topLeft().x()}, {rect.topLeft().y()}, {rect.width()}, {rect.height()})', Qt.MatchContains
+        )
+        if len(exists) != 0:
+            # If the tag exists, grab the item row and remove it
+            item = self.TagsFrameList.row(exists[0])
+            self.TagsFrameList.takeItem(
+                item
+            )
+        if self.TagsFrameList.count() == 0:
+            exists = self.TaggedFrameList.findItems(
+                f'Frame: {self.FrameView.DrawScene.current_frame + 1}', Qt.MatchExactly
+            )
+            if exists:
+                item = self.TaggedFrameList.row(exists[0])
+                self.TaggedFrameList.takeItem(item)
 
 
 app = QApplication(sys.argv)

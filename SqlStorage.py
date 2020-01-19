@@ -16,6 +16,8 @@ class SqlStorage():
         params = (frame, t_class, x, y, width, height, color)
         self.cursor.execute(query, params)
         self.connection.commit()
+        for row in self.cursor.execute('SELECT * FROM frames'):
+            print(row)
 
     def get_rects(self, frame):
         query = 'SELECT * FROM frames WHERE frame=?'
@@ -23,3 +25,13 @@ class SqlStorage():
         self.cursor.execute(query, (t_frame,))
         results = self.cursor.fetchall()
         return results
+
+    def remove_rect(self, rect):
+        print('removed')
+        query = 'DELETE FROM frames WHERE x=? and y=? and width=? and height=?'
+        x = rect.topLeft().x()
+        y = rect.topRight().y()
+        width = rect.width()
+        height = rect.height()
+        self.cursor.execute(query, (x, y, width, height))
+        self.connection.commit()

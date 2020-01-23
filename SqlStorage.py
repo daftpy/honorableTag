@@ -17,12 +17,18 @@ class SqlStorage():
         self.cursor.execute(query, params)
         self.connection.commit()
         for row in self.cursor.execute('SELECT * FROM frames'):
-            print(row)
+            # print(row)
+            pass
 
     def get_rects(self, frame):
         query = 'SELECT * FROM frames WHERE frame=?'
         t_frame = frame
         self.cursor.execute(query, (t_frame,))
+        results = self.cursor.fetchall()
+        return results
+
+    def get_all_rects(self):
+        results = self.cursor.execute('SELECT * FROM frames')
         results = self.cursor.fetchall()
         return results
 

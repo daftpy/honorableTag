@@ -3,3 +3,5 @@ test.names
 *.pyc
 __pycache__
 gui/__pycache__
+/output
+/.vscode

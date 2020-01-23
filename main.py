@@ -3,7 +3,7 @@ import re
 from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidgetItem
 from PyQt5.QtCore import Qt
 from GuiFile import Ui_MainWindow
-from helpers.file_helpers import load_video_file, load_class_data
+from helpers.file_helpers import load_video_file, load_class_data, export_frames_yolo
 from gui.ClassLabel import ClassLabel
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -38,6 +38,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         )
         self.ClassLabelList.itemClicked.connect(self.select_class)
         self.TaggedFrameList.itemClicked.connect(self.get_tagged_frame)
+        self.ExportFramesButton.clicked.connect(self.export_frames)
 
         # Set up signals essential for updating the gui
         self.FrameView.mouse_pos_signal.connect(
@@ -60,7 +61,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         except:
             # Error handled in the helper.
             return
-        
         self.VideoPathLabel.setText(
             f'<b>Path: </b> {f_path}'
         )
@@ -129,7 +129,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         exists = self.TaggedFrameList.findItems(
             f'Frame: {self.FrameView.DrawScene.current_frame + 1}', Qt.MatchExactly
         )
-        print('exists?', exists)
         if len(exists) == 0:
             self.TaggedFrameList.addItem(
                 QListWidgetItem(f'Frame: {self.FrameView.DrawScene.current_frame + 1}')
@@ -165,6 +164,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def get_tagged_frame(self, frame_item):
         frame = int(re.search(r'\d+', frame_item.text()).group()) - 1
         self.FrameView.DrawScene.get_frame(frame)
+
+    def export_frames(self):
+        rows = self.FrameView.DrawScene.sql_storage.get_all_rects()
+        class_list = [str(self.ClassLabelList.item(i).text()) for i in range(self.ClassLabelList.count())]
+        export_frames_yolo(self, rows, class_list, self.FrameView.DrawScene.frame_array)
 
 app = QApplication(sys.argv)
 window = MainWindow()

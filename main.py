@@ -3,14 +3,15 @@ import re
 from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidgetItem
 from PyQt5.QtCore import Qt
 from GuiFile import Ui_MainWindow
-from helpers.file_helpers import load_video_file, load_class_data, export_frames_yolo
 from gui.ClassLabel import ClassLabel
+from helpers.file_helpers import load_video_file,\
+    load_class_data, export_frames_yolo
+
 
 class MainWindow(QMainWindow, Ui_MainWindow):
 
     def __init__(self, *args, obj=None, **kwargs):
         QMainWindow.__init__(self)
-        
         self.setupUi(self)
 
         # Set up gui connections
@@ -55,11 +56,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         )
 
     def load_video(self):
+        # None type returned if failed to load file
         try:
-            # None type returned if failed to load file
             f_path, frame_array = load_video_file(self)
-        except:
-            # Error handled in the helper.
+        except TypeError:
             return
         self.VideoPathLabel.setText(
             f'<b>Path: </b> {f_path}'
@@ -93,7 +93,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             f'{n+1}/{len(self.FrameView.DrawScene.frame_array)}'
         )
         self.TagsFrameList.clear()
-        
 
     def step_forward(self, n):
         self.FrameView.DrawScene.get_frame(
@@ -127,11 +126,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             )
         # If frame is not in the TaggedFrameList already, add it
         exists = self.TaggedFrameList.findItems(
-            f'Frame: {self.FrameView.DrawScene.current_frame + 1}', Qt.MatchExactly
+            f'Frame: {self.FrameView.DrawScene.current_frame + 1}',
+            Qt.MatchExactly
         )
         if len(exists) == 0:
             self.TaggedFrameList.addItem(
-                QListWidgetItem(f'Frame: {self.FrameView.DrawScene.current_frame + 1}')
+                QListWidgetItem(
+                    f'Frame: {self.FrameView.DrawScene.current_frame + 1}'
+                )
             )
         # Order items in TaggedFrameList
         exists = self.TaggedFrameList.findItems(
@@ -145,7 +147,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def remove_from_tags_list(self, rect):
         # Find the tag in the TagsFrameList by finding the rect shape
         exists = self.TagsFrameList.findItems(
-            f'({rect.topLeft().x()}, {rect.topLeft().y()}, {rect.width()}, {rect.height()})', Qt.MatchContains
+            f'({rect.topLeft().x()}, '
+            f'{rect.topLeft().y()}, '
+            f'{rect.width()}, {rect.height()})',
+            Qt.MatchContains
         )
         if len(exists) != 0:
             # If the tag exists, grab the item row and remove it
@@ -155,7 +160,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             )
         if self.TagsFrameList.count() == 0:
             exists = self.TaggedFrameList.findItems(
-                f'Frame: {self.FrameView.DrawScene.current_frame + 1}', Qt.MatchExactly
+                f'Frame: {self.FrameView.DrawScene.current_frame + 1}',
+                Qt.MatchExactly
             )
             if exists:
                 item = self.TaggedFrameList.row(exists[0])
@@ -167,8 +173,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def export_frames(self):
         rows = self.FrameView.DrawScene.sql_storage.get_all_rects()
-        class_list = [str(self.ClassLabelList.item(i).text()) for i in range(self.ClassLabelList.count())]
-        export_frames_yolo(self, rows, class_list, self.FrameView.DrawScene.frame_array)
+        class_list = [
+            str(self.ClassLabelList.item(i).text())
+            for i in range(self.ClassLabelList.count())
+        ]
+        export_frames_yolo(
+            self, rows, class_list, self.FrameView.DrawScene.frame_array
+        )
+
 
 app = QApplication(sys.argv)
 window = MainWindow()

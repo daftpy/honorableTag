@@ -7,7 +7,8 @@ class SqlStorage():
         self.cursor = self.connection.cursor()
         self.cursor.execute('''
             CREATE TABLE frames
-            (frame int, class string, x int, y int, width int, height int, color string, unique (frame, class, x, y))
+            (frame int, class string, x int, y int, width int,
+            height int, color string, unique (frame, class, x, y))
         ''')
         self.connection.commit()
 
@@ -16,9 +17,6 @@ class SqlStorage():
         params = (frame, t_class, x, y, width, height, color)
         self.cursor.execute(query, params)
         self.connection.commit()
-        for row in self.cursor.execute('SELECT * FROM frames'):
-            # print(row)
-            pass
 
     def get_rects(self, frame):
         query = 'SELECT * FROM frames WHERE frame=?'
@@ -34,7 +32,8 @@ class SqlStorage():
 
     def remove_rect(self, rect):
         print('removed')
-        query = 'DELETE FROM frames WHERE x=? and y=? and width=? and height=?'
+        query = 'DELETE FROM frames \
+            WHERE x=? and y=? and width=? and height=?'
         x = rect.topLeft().x()
         y = rect.topRight().y()
         width = rect.width()

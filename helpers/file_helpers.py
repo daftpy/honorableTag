@@ -9,6 +9,7 @@ from PIL import Image
 from os import path, mkdir
 import shutil
 
+
 def load_video_file(self):
     file_name, _ = QFileDialog.getOpenFileName(
         self,
@@ -27,14 +28,16 @@ def load_video_file(self):
                 f'Try loading a different video file. \n{err}'
             )
             msg.exec_()
-            return
-    
+            return err
+
     # Return the file path and frame array
     return (file_name, frame_array)
 
+
 def load_class_data(self):
     file_name, _ = QFileDialog.getOpenFileName(
-        self,"QFileDialog.getOpenFileName()",
+        self,
+        "QFileDialog.getOpenFileName()",
         "",
         "All Files (*);;Python Files (*.py)"
     )
@@ -61,6 +64,7 @@ def load_class_data(self):
             return
     return class_labels
 
+
 def export_frames_yolo(self, sql_rows, class_list, frame_array):
     if not path.exists('output'):
         mkdir('output')
@@ -70,7 +74,7 @@ def export_frames_yolo(self, sql_rows, class_list, frame_array):
     # Get the number associated with the class_label for export format
     values = list(range(len(class_list)))
     # Break off the class name, remove color, zip it with its relative value
-    value_list = {k.split(' - ')[0]:v for (k,v) in zip(class_list, values)}
+    value_list = {k.split(' - ')[0]: v for (k, v) in zip(class_list, values)}
     for row in sql_rows:
         img = Image.fromarray(frame_array[row[0]], 'RGB')
         img.save(f'output/{row[0]}_image.jpeg')
@@ -84,6 +88,7 @@ def export_frames_yolo(self, sql_rows, class_list, frame_array):
         # the value list for the corresponding class integer
         f.write(f'{value_list[row[1]]} {" ".join(yolo_format_text)}\n')
         f.close()
+
 
 def yolo_format(frame, rect):
     x_center = float(

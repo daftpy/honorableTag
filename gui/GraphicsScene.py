@@ -13,12 +13,12 @@ class GraphicsScene(QGraphicsScene):
         super(QGraphicsScene, self).__init__(*args, **kwargs)
         self.frame_array = None
         self.current_frame = None
-        self.rect_list = [] # Rect list for storage in sql
+        self.rect_list = []  # Rect list for storage in sql
         self.sql_storage = SqlStorage()
 
     def get_frame(self, n):
         if len(self.rect_list) > 0:
-            try: # try except to skip duplicates
+            try:  # try except to skip duplicates
                 for rect in self.rect_list:
                     # Insert any frames in rect list into sql storage
                     self.sql_storage.insert_rect_record(
@@ -38,7 +38,7 @@ class GraphicsScene(QGraphicsScene):
         if self.frame_array and len(self.frame_array)-1 >= n and n >= 0:
             frame = self.frame_array[n]
             # Load the frame into a QImage
-            q_image = QImage (
+            q_image = QImage(
                 frame,
                 frame.shape[1],
                 frame.shape[0],
@@ -46,10 +46,10 @@ class GraphicsScene(QGraphicsScene):
             )
             # Clear the scene and draw the new pixmap
             self.current_frame = n
-            self.current_frame_signal.emit(n) # Emit current frame to the gui
+            self.current_frame_signal.emit(n)  # Emit current frame to the gui
             self.clear()
             self.addPixmap(QPixmap(q_image))
-            self.load_rects() # Load any rects that should be in the scene
+            self.load_rects()  # Load any rects that should be in the scene
             self.update()
 
     def new_rect(self, new_rect, selected_class):
@@ -67,7 +67,9 @@ class GraphicsScene(QGraphicsScene):
             [new_rect, selected_class[0], selected_class[1]]
         )
         # selected_class[0], class label selected_class[1] color
-        self.new_tag_signal.emit([new_rect, selected_class[0], selected_class[1]])
+        self.new_tag_signal.emit(
+            [new_rect, selected_class[0], selected_class[1]]
+        )
         self.update()
 
     def load_rects(self):

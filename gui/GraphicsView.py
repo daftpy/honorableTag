@@ -1,12 +1,13 @@
 from PyQt5.QtWidgets import QGraphicsView
-from PyQt5.QtCore import Qt, QEvent, pyqtSignal, QRect
-from PyQt5.QtGui import QPainter, QPen
+from PyQt5.QtCore import Qt, pyqtSignal, QRect
+from PyQt5.QtGui import QPainter
 from gui.GraphicsScene import GraphicsScene
 
 
 class GraphicsView(QGraphicsView):
     mouse_pos_signal = pyqtSignal(int, int)
     remove_rect_signal = pyqtSignal(QRect)
+
     def __init__(self, parent=None):
         super(GraphicsView, self).__init__(parent)
         # Create and set scene
@@ -29,8 +30,8 @@ class GraphicsView(QGraphicsView):
             self.mouse_scene_pos.x(),
             self.mouse_scene_pos.y()
         )
-        if event.buttons() == Qt.MidButton: # or Qt.MiddleButton
-            offset = self.prev_pos - event.pos() # get the offset
+        if event.buttons() == Qt.MidButton:  # or Qt.MiddleButton
+            offset = self.prev_pos - event.pos()  # get the offset
             self.prev_pos = event.pos()
             # Move the scene via the scrollbars
             self.verticalScrollBar().setValue(
@@ -46,7 +47,7 @@ class GraphicsView(QGraphicsView):
         self.viewport().update()
 
     def mousePressEvent(self, event):
-        if event.button() == Qt.MidButton: # or Qt.MiddleButton
+        if event.button() == Qt.MidButton:  # or Qt.MiddleButton
             # Set pos used for moving around the pixmap
             self.prev_pos = event.pos()
         # Set the prev_pos so we can start rendering a temp rec
@@ -59,7 +60,7 @@ class GraphicsView(QGraphicsView):
             )
             if not hasattr(item, 'pixmap'):
                 rect = item.rect()
-                rect = rect.toRect() # convert the QRectF to a normal QRect
+                rect = rect.toRect()  # Convert the QRectF to a normal QRect
                 self.DrawScene.sql_storage.remove_rect(rect)
                 for row in self.DrawScene.rect_list:
                     # Find the row(list) that contains the rect
@@ -77,8 +78,8 @@ class GraphicsView(QGraphicsView):
                 # Map the pos to the scene before rendering for accurate pos
                 self.prev_pos = self.mapToScene(self.prev_pos)
                 new_rect = QRect(
-                    self.prev_pos.toPoint(), # Round our pos to whole numbers
-                    self.mapToScene(event.pos()).toPoint() 
+                    self.prev_pos.toPoint(),  # Round our pos to whole numbers
+                    self.mapToScene(event.pos()).toPoint()
                 )
                 # Draw the rect
                 self.DrawScene.new_rect(new_rect, self.selected_class)
@@ -90,7 +91,7 @@ class GraphicsView(QGraphicsView):
     def wheelEvent(self, event):
         # Scroll zoom mechanism
         adj = (event.angleDelta().y()) * 0.001
-        self.scale(1+adj,1+adj)
+        self.scale(1+adj, 1+adj)
 
     def paintEvent(self, event):
         super().paintEvent(event)
@@ -113,7 +114,6 @@ class GraphicsView(QGraphicsView):
                 self.viewport().width(),
                 self.mouse_view_pos.y()
             )
-        
         if self.prev_pos:
             # Draw temporary rect for accurate placement
             painter.drawRect(QRect(

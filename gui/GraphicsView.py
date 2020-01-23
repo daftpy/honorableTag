@@ -30,6 +30,7 @@ class GraphicsView(QGraphicsView):
             self.mouse_scene_pos.x(),
             self.mouse_scene_pos.y()
         )
+
         if event.buttons() == Qt.MidButton:  # or Qt.MiddleButton
             offset = self.prev_pos - event.pos()  # get the offset
             self.prev_pos = event.pos()
@@ -42,6 +43,7 @@ class GraphicsView(QGraphicsView):
             )
         else:
             super().mouseMoveEvent(event)
+
         # Update the viewport on the GraphicsView to trigger
         # paint event for the crosshairs
         self.viewport().update()
@@ -50,6 +52,7 @@ class GraphicsView(QGraphicsView):
         if event.button() == Qt.MidButton:  # or Qt.MiddleButton
             # Set pos used for moving around the pixmap
             self.prev_pos = event.pos()
+
         # Set the prev_pos so we can start rendering a temp rec
         elif event.button() == Qt.LeftButton:
             self.prev_pos = event.pos()
@@ -82,10 +85,13 @@ class GraphicsView(QGraphicsView):
                     self.mapToScene(event.pos()).toPoint()
                 )
                 # Draw the rect
-                self.DrawScene.new_rect(new_rect, self.selected_class)
+                if self.selected_class:
+                    self.DrawScene.new_rect(new_rect, self.selected_class)
                 self.prev_pos = None
-        if event.button() == Qt.MidButton:
+
+        elif event.button() == Qt.MidButton:
             self.prev_pos = None
+
         self.viewport().update()
 
     def wheelEvent(self, event):
@@ -95,12 +101,14 @@ class GraphicsView(QGraphicsView):
 
     def paintEvent(self, event):
         super().paintEvent(event)
-        # Creates our crosshairs to help create more accurate bounding boxes
         painter = QPainter(self.viewport())
+        # Creates our crosshairs to help create more accurate
+        # bounding boxes
         if self.selected_class:
             painter.setPen(self.selected_class[1])
         else:
             painter.setPen(Qt.red)
+
         if self.mouse_view_pos:
             painter.drawLine(
                 self.mouse_view_pos.x(),
@@ -114,6 +122,7 @@ class GraphicsView(QGraphicsView):
                 self.viewport().width(),
                 self.mouse_view_pos.y()
             )
+
         if self.prev_pos:
             # Draw temporary rect for accurate placement
             painter.drawRect(QRect(

@@ -32,6 +32,7 @@ class GraphicsScene(QGraphicsScene):
                     )
             except IntegrityError as err:
                 print(err)
+
         # Clear the rect list for a new scene
         self.rect_list = []
         # Make sure we have a frame array loaded and we do not go out of index

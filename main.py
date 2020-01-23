@@ -56,7 +56,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         )
 
     def load_video(self):
-        # None type returned if failed to load file
+        # Attempt to load video or return
         try:
             f_path, frame_array = load_video_file(self)
         except TypeError:
@@ -124,6 +124,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     rect=(rect[0].getRect())
                 )
             )
+
         # If frame is not in the TaggedFrameList already, add it
         exists = self.TaggedFrameList.findItems(
             f'Frame: {self.FrameView.DrawScene.current_frame + 1}',
@@ -135,6 +136,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     f'Frame: {self.FrameView.DrawScene.current_frame + 1}'
                 )
             )
+
         # Order items in TaggedFrameList
         exists = self.TaggedFrameList.findItems(
             'Frame:', Qt.MatchContains
@@ -152,12 +154,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             f'{rect.width()}, {rect.height()})',
             Qt.MatchContains
         )
+
         if len(exists) != 0:
             # If the tag exists, grab the item row and remove it
             item = self.TagsFrameList.row(exists[0])
             self.TagsFrameList.takeItem(
                 item
             )
+
         if self.TagsFrameList.count() == 0:
             exists = self.TaggedFrameList.findItems(
                 f'Frame: {self.FrameView.DrawScene.current_frame + 1}',

@@ -55,12 +55,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.remove_from_tags_list
         )
 
-    def load_video(self):
-        # Attempt to load video or return
-        try:
-            f_path, frame_array = load_video_file(self)
-        except TypeError:
-            return
+    def load_video(self, videofile=None):
+        if videofile:
+            # Pass video file for testin purposes
+            f_path, frame_array = load_video_file(self, videofile)
+        else:
+            # Attempt to load video
+            try:
+                f_path, frame_array = load_video_file(self)
+            except TypeError:
+                return
         self.VideoPathLabel.setText(
             f'<b>Path: </b> {f_path}'
         )

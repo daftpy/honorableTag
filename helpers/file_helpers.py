@@ -10,7 +10,11 @@ from os import path, mkdir
 import shutil
 
 
-def load_video_file(self):
+def load_video_file(self, videofile=None):
+    if videofile:
+        # For testing purposes
+        frame_array = pims.Video(videofile)
+        return(videofile, frame_array)
     file_name, _ = QFileDialog.getOpenFileName(
         self,
         'QFileDialog.getOpenFileName()',
@@ -21,7 +25,9 @@ def load_video_file(self):
     if file_name:
         frame_array = None
         try:
+            # Return the file path and frame array
             frame_array = pims.Video(file_name)
+            return (file_name, frame_array)
         except AVError as err:
             msg = QMessageBox()
             msg.setText(
@@ -29,9 +35,6 @@ def load_video_file(self):
             )
             msg.exec_()
             return err
-
-    # Return the file path and frame array
-    return (file_name, frame_array)
 
 
 def load_class_data(self):

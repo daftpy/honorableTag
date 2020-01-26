@@ -25,6 +25,7 @@ Make sure conda-forge is appended to your conda config channels before moving fo
 
 
 [PIMS](https://github.com/soft-matter/pims)
+
 Currently using the development version of pims due to a compatability issue.
 
 `pip install git+https://github.com/soft-matter/pims.git`

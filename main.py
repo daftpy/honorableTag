@@ -87,7 +87,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 # Add the color name to the label text and add it to the list
                 label.add_color_text()
                 self.ClassLabelList.addItem(label)
-        self.select_class(class_labels[0])
+            self.select_class(class_labels[0])
 
     def update_coordinates_display(self, x, y):
         # Slot for xy_coords, updates x,y coord display every mouse_pos emit

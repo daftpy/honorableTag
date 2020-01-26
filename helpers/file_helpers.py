@@ -37,13 +37,16 @@ def load_video_file(self, videofile=None):
             return err
 
 
-def load_class_data(self):
-    file_name, _ = QFileDialog.getOpenFileName(
-        self,
-        "QFileDialog.getOpenFileName()",
-        "",
-        "All Files (*);;Python Files (*.py)"
-    )
+def load_class_data(self, class_file=None):
+    if class_file:
+        file_name = class_file
+    else:
+        file_name, _ = QFileDialog.getOpenFileName(
+            self,
+            "QFileDialog.getOpenFileName()",
+            "",
+            "All Files (*);;Python Files (*.py)"
+        )
     class_labels = []
     if file_name:
         try:

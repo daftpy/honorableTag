@@ -75,9 +75,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.FrameView.DrawScene.frame_array = frame_array
         self.FrameView.DrawScene.get_frame(0)
 
-    def load_classes(self):
-        # None type is returned if failed to load file
-        class_labels = load_class_data(self)
+    def load_classes(self, class_file=None):
+        self.ClassLabelList.clear()  # Clear the frame before loading labels
+        if class_file:  # For testing purposes
+            class_labels = load_class_data(self, class_file)
+        else:
+            class_labels = load_class_data(self)
         if class_labels:
             # Iterate through class_labels and activate each label
             for label in class_labels:

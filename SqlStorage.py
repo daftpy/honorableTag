@@ -31,6 +31,11 @@ class SqlStorage():
         results = self.cursor.fetchall()
         return results
 
+    def get_all_tagged_frames(self):
+        results = self.cursor.execute('SELECT frame FROM frames')
+        results = self.cursor.fetchall()
+        return results
+
     def remove_rect(self, rect):
         print('removed')
         query = 'DELETE FROM frames \

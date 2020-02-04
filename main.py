@@ -230,6 +230,28 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             label = ClassLabel(class_label[0], color=QColor(class_label[1]))
             label.add_color_text()
             self.ClassLabelList.addItem(label)
+        tagged_frames = self.FrameView.DrawScene.sql_storage.get_all_tagged_frames()
+        for frame in tagged_frames:
+            # If frame is not in the TaggedFrameList already, add it
+            exists = self.TaggedFrameList.findItems(
+                f'Frame: {frame[0] + 1}',
+                Qt.MatchExactly
+            )
+            if len(exists) == 0:
+                self.TaggedFrameList.addItem(
+                    QListWidgetItem(
+                        f'Frame: {frame[0] + 1}'
+                    )
+                )
+
+        # Order items in TaggedFrameList
+        exists = self.TaggedFrameList.findItems(
+            'Frame:', Qt.MatchContains
+        )
+        frame_list = [str(frame_title.text()) for frame_title in exists]
+        ordered_frame_list = sorted(frame_list, key=lambda h: int(h[7:]))
+        self.TaggedFrameList.clear()
+        self.TaggedFrameList.addItems(ordered_frame_list)
 
 
 app = QApplication(sys.argv)

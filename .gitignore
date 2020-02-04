@@ -5,3 +5,4 @@ __pycache__
 gui/__pycache__
 /output
 /.vscode
+*.csv

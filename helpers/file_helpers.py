@@ -79,24 +79,26 @@ def export_frames_yolo(self, sql_rows, class_list, frame_array):
         mkdir('output')
     # Get the number associated with the class_label for export format
     values = list(range(len(class_list)))
-    # Break off the class name, remove color, zip it with its relative value
-    value_list = {k.split(' - ')[0]: v for (k, v) in zip(class_list, values)}
+    # Attatch the class_label with its relative number
+    value_list = {k : v for (k, v) in zip(class_list, values)}
     for row in sql_rows:
         img = Image.fromarray(frame_array[row[0]], 'RGB')
         img.save(f'output/{row[0]}_image.jpeg')
-        # Turn it into a qrect for quick maths
+        # Construct the QRect from the sql data
         rect = QRect(row[2], row[3], row[4], row[5])
         frame = frame_array[row[0]]
         # Get yolo format from frame and rect dimensions
         yolo_format_text = yolo_format(frame, rect)
+        # Create the text file for ML training
         f = open(f'output/{row[0]}.txt', 'a+')
-        # row[1] is the class name. Use it as a key to get a value from
-        # the value list for the corresponding class integer
+        # row[1] is the class name. Use it with value_list to get
+        # the corresponding class integer and write it to the file
         f.write(f'{value_list[row[1]]} {" ".join(yolo_format_text)}\n')
         f.close()
 
 
 def yolo_format(frame, rect):
+    # Ratios formula
     x_center = float(
         (rect.topLeft().x() + rect.bottomRight().x()) / (2.0 * frame.shape[1])
     )
@@ -106,4 +108,5 @@ def yolo_format(frame, rect):
     x_width = float(rect.width()) / frame.shape[1]
     y_height = float(rect.height()) / frame.shape[0]
     items = map(str, [x_center, y_center, x_width, y_height])
+    # Return list of ratios
     return list(items)

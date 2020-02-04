@@ -40,6 +40,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.ClassLabelList.itemClicked.connect(self.select_class)
         self.TaggedFrameList.itemClicked.connect(self.get_tagged_frame)
         self.ExportFramesButton.clicked.connect(self.export_frames)
+        self.ToolButton.clicked.connect(self.FrameView.DrawScene.sql_storage.export_db_to_csv)
 
         # Set up signals essential for updating the gui
         self.FrameView.mouse_pos_signal.connect(
@@ -179,13 +180,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.TaggedFrameList.takeItem(item)
 
     def get_tagged_frame(self, frame_item):
+        # Get the number from the frame_item and go to that frame
         frame = int(re.search(r'\d+', frame_item.text()).group()) - 1
         self.FrameView.DrawScene.get_frame(frame)
 
     def export_frames(self):
         rows = self.FrameView.DrawScene.sql_storage.get_all_rects()
         class_list = [
-            str(self.ClassLabelList.item(i).text())
+            str(self.ClassLabelList.item(i).label)
             for i in range(self.ClassLabelList.count())
         ]
         export_frames_yolo(

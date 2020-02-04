@@ -1,6 +1,7 @@
 import sys
 import re
 from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidgetItem
+from PyQt5.QtGui import QColor
 from PyQt5.QtCore import Qt
 from GuiFile import Ui_MainWindow
 from gui.ClassLabel import ClassLabel
@@ -46,7 +47,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # Set up signals essential for updating the gui
         # Mouse pos signal
-        self.FrameView.mouse_pos_signal.connect(  
+        self.FrameView.mouse_pos_signal.connect(
             self.update_coordinates_display
         )
         # Current frame signal
@@ -63,8 +64,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.ExportWindow.csv_file_signal.connect(  # Csv file Save signal
             lambda x: self.export_to_csv(x)
         )
-        self.ExportWindow.csv_load.connect(
-            lambda x: self.FrameView.DrawScene.sql_storage.load_csv_to_db(x)
+        self.ExportWindow.csv_load_signal.connect(
+            lambda x: self.load_from_csv(x)
         )
 
     def load_video(self, videofile=None):
@@ -210,10 +211,26 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def export_to_csv(self, file_name):
         class_list = [
-            f'{self.ClassLabelList.item(i).label} - {self.ClassLabelList.item(i).color.name()}'
+            f'{self.ClassLabelList.item(i).label}'
+            f' - {self.ClassLabelList.item(i).color.name()}'
             for i in range(self.ClassLabelList.count())
         ]
-        self.FrameView.DrawScene.sql_storage.export_db_to_csv(file_name, class_list)
+        self.FrameView.DrawScene.sql_storage.export_db_to_csv(
+            file_name,
+            class_list
+        )
+
+    def load_from_csv(self, file_name):
+        self.ClassLabelList.clear()
+        class_list = self.FrameView.DrawScene.sql_storage.load_csv_to_db(
+            file_name
+        )
+        for class_label in class_list:
+            class_label = class_label.split(' - ')
+            label = ClassLabel(class_label[0], color=QColor(class_label[1]))
+            label.add_color_text()
+            self.ClassLabelList.addItem(label)
+
 
 app = QApplication(sys.argv)
 window = MainWindow()

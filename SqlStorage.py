@@ -51,7 +51,10 @@ class SqlStorage():
     def load_csv_to_db(self, file_name):
         with open(f'{file_name}.csv') as f:
             reader = csv.reader(f)
+            class_list = next(reader)
             for row in reader:
-                print(row)
-                self.cursor.execute("INSERT INTO frames VALUES (?, ?, ?, ?, ?, ?, ?)", row)
-        print(self.get_all_rects())
+                self.cursor.execute(
+                    "INSERT INTO frames VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    row
+                )
+        return class_list

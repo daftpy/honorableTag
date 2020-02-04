@@ -6,7 +6,7 @@ from PyQt5.QtCore import pyqtSignal
 
 class ExportWindow(QMainWindow, Ui_MainWindow):
     csv_file_signal = pyqtSignal(str)
-    csv_load = pyqtSignal(str)
+    csv_load_signal = pyqtSignal(str)
 
     def __init__(self, *args, obj=None, **kwargs):
         QMainWindow.__init__(self)
@@ -22,6 +22,6 @@ class ExportWindow(QMainWindow, Ui_MainWindow):
         )
 
     def emit_load_csv(self):
-        self.csv_load.emit(
+        self.csv_load_signal.emit(
             self.CsvFileLineEdit.text()
         )

@@ -42,24 +42,29 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.ClassLabelList.itemClicked.connect(self.select_class)
         self.TaggedFrameList.itemClicked.connect(self.get_tagged_frame)
         self.ExportFramesButton.clicked.connect(self.export_frames)
-        # self.ToolButton.clicked.connect(self.FrameView.DrawScene.sql_storage.export_db_to_csv)
         self.ToolButton.clicked.connect(self.show_export_window)
 
         # Set up signals essential for updating the gui
-        self.FrameView.mouse_pos_signal.connect(
+        # Mouse pos signal
+        self.FrameView.mouse_pos_signal.connect(  
             self.update_coordinates_display
         )
+        # Current frame signal
         self.FrameView.DrawScene.current_frame_signal.connect(
             self.update_current_frame_display
         )
+        # New frame tag signal
         self.FrameView.DrawScene.new_tag_signal.connect(
             self.update_tags_list
         )
-        self.FrameView.remove_rect_signal.connect(
+        self.FrameView.remove_rect_signal.connect(  # Rect removal signal
             self.remove_from_tags_list
         )
-        self.ExportWindow.csv_file_signal.connect(
-            lambda x: self.FrameView.DrawScene.sql_storage.export_db_to_csv(x)
+        self.ExportWindow.csv_file_signal.connect(  # Csv file Save signal
+            lambda x: self.export_to_csv(x)
+        )
+        self.ExportWindow.csv_load.connect(
+            lambda x: self.FrameView.DrawScene.sql_storage.load_csv_to_db(x)
         )
 
     def load_video(self, videofile=None):
@@ -203,6 +208,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def show_export_window(self):
         self.ExportWindow.show()
 
+    def export_to_csv(self, file_name):
+        class_list = [
+            f'{self.ClassLabelList.item(i).label} - {self.ClassLabelList.item(i).color.name()}'
+            for i in range(self.ClassLabelList.count())
+        ]
+        self.FrameView.DrawScene.sql_storage.export_db_to_csv(file_name, class_list)
 
 app = QApplication(sys.argv)
 window = MainWindow()

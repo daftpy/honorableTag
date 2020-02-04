@@ -42,7 +42,16 @@ class SqlStorage():
         self.cursor.execute(query, (x, y, width, height))
         self.connection.commit()
 
-    def export_db_to_csv(self, file_name):
+    def export_db_to_csv(self, file_name, class_list):
         rows =  self.get_all_rects()
-        csv_writer = csv.writer(open(f'{file_name}.csv', 'w'))
+        csv_writer = csv.writer(open(f'{file_name}.csv', 'w', newline=''))
+        csv_writer.writerow(class_list)
         csv_writer.writerows(rows)
+
+    def load_csv_to_db(self, file_name):
+        with open(f'{file_name}.csv') as f:
+            reader = csv.reader(f)
+            for row in reader:
+                print(row)
+                self.cursor.execute("INSERT INTO frames VALUES (?, ?, ?, ?, ?, ?, ?)", row)
+        print(self.get_all_rects())

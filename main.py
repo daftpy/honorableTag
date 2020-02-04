@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidgetItem
 from PyQt5.QtCore import Qt
 from GuiFile import Ui_MainWindow
 from gui.ClassLabel import ClassLabel
+from gui.ExportWindow import ExportWindow
 from helpers.file_helpers import load_video_file,\
     load_class_data, export_frames_yolo
 
@@ -13,6 +14,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, *args, obj=None, **kwargs):
         QMainWindow.__init__(self)
         self.setupUi(self)
+        self.ExportWindow = ExportWindow()
 
         # Set up gui connections
         self.LoadVideoButton.clicked.connect(self.load_video)
@@ -40,7 +42,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.ClassLabelList.itemClicked.connect(self.select_class)
         self.TaggedFrameList.itemClicked.connect(self.get_tagged_frame)
         self.ExportFramesButton.clicked.connect(self.export_frames)
-        self.ToolButton.clicked.connect(self.FrameView.DrawScene.sql_storage.export_db_to_csv)
+        # self.ToolButton.clicked.connect(self.FrameView.DrawScene.sql_storage.export_db_to_csv)
+        self.ToolButton.clicked.connect(self.show_export_window)
 
         # Set up signals essential for updating the gui
         self.FrameView.mouse_pos_signal.connect(
@@ -54,6 +57,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         )
         self.FrameView.remove_rect_signal.connect(
             self.remove_from_tags_list
+        )
+        self.ExportWindow.csv_file_signal.connect(
+            lambda x: self.FrameView.DrawScene.sql_storage.export_db_to_csv(x)
         )
 
     def load_video(self, videofile=None):
@@ -193,6 +199,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         export_frames_yolo(
             self, rows, class_list, self.FrameView.DrawScene.frame_array
         )
+
+    def show_export_window(self):
+        self.ExportWindow.show()
 
 
 app = QApplication(sys.argv)

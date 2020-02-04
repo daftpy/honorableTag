@@ -42,7 +42,7 @@ class SqlStorage():
         self.cursor.execute(query, (x, y, width, height))
         self.connection.commit()
 
-    def export_db_to_csv(self):
+    def export_db_to_csv(self, file_name):
         rows =  self.get_all_rects()
-        csv_writer = csv.writer(open('db.csv', 'w'))
+        csv_writer = csv.writer(open(f'{file_name}.csv', 'w'))
         csv_writer.writerows(rows)

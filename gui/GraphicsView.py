@@ -58,12 +58,9 @@ class GraphicsView(QGraphicsView):
             self.prev_pos = event.pos()
 
         elif event.button() == Qt.RightButton:
-            try:
-                item = self.itemAt(
-                    event.pos()
-                )
-            except:
-                pass
+            item = self.itemAt(
+                event.pos()
+            )
             if item:
                 if not hasattr(item, 'pixmap'):
                     rect = item.rect()

@@ -31,6 +31,12 @@ Currently using the development version of pims due to a compatability issue.
 `pip install git+https://github.com/soft-matter/pims.git`
 
 
+# Testing
+Writing more tests is on the todo list. To run the tests that are available, use the command below.
+
+`python -m tests.test`
+
+
 ## Todo
 
 1. Implement more testing

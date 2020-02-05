@@ -10,6 +10,10 @@ Basics functionality implemented including class labeling, pan & zoom, SQL stora
 
 ![Saving Loading](https://media.giphy.com/media/VbcFlzSvE1VB6iSbXQ/giphy.gif)
 
+![Web Repositories](https://media.giphy.com/media/kdi7GKIakKVU4HSfrX/giphy.gif)
+
+An internal web app to share repositories among teams is in development.
+
 # Installation
 Make sure conda-forge is appended to your conda config channels before moving forward with installation.
 

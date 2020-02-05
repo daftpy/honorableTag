@@ -58,20 +58,24 @@ class GraphicsView(QGraphicsView):
             self.prev_pos = event.pos()
 
         elif event.button() == Qt.RightButton:
-            item = self.itemAt(
-                event.pos()
-            )
-            if not hasattr(item, 'pixmap'):
-                rect = item.rect()
-                rect = rect.toRect()  # Convert the QRectF to a normal QRect
-                self.DrawScene.sql_storage.remove_rect(rect)
-                for row in self.DrawScene.rect_list:
-                    # Find the row(list) that contains the rect
-                    if rect in row:
-                        # Remove from rect_list to not save it on get_frame
-                        self.DrawScene.rect_list.remove(row)
-                self.remove_rect_signal.emit(rect)
-                item = self.DrawScene.removeItem(item)
+            try:
+                item = self.itemAt(
+                    event.pos()
+                )
+            except:
+                pass
+            if item:
+                if not hasattr(item, 'pixmap'):
+                    rect = item.rect()
+                    rect = rect.toRect()  # Convert the QRectF to a normal QRect
+                    self.DrawScene.sql_storage.remove_rect(rect)
+                    for row in self.DrawScene.rect_list:
+                        # Find the row(list) that contains the rect
+                        if rect in row:
+                            # Remove from rect_list to not save it on get_frame
+                            self.DrawScene.rect_list.remove(row)
+                    self.remove_rect_signal.emit(rect)
+                    item = self.DrawScene.removeItem(item)
 
     def mouseReleaseEvent(self, event):
         # Reset the prev_pos so we stop drawing the temp rec

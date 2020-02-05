@@ -18,20 +18,7 @@ class GraphicsScene(QGraphicsScene):
 
     def get_frame(self, n):
         if len(self.rect_list) > 0:
-            try:  # try except to skip duplicates
-                for rect in self.rect_list:
-                    # Insert any frames in rect list into sql storage
-                    self.sql_storage.insert_rect_record(
-                        self.current_frame,
-                        rect[1],
-                        rect[0].topLeft().x(),
-                        rect[0].topLeft().y(),
-                        rect[0].width(),
-                        rect[0].height(),
-                        rect[2].name()
-                    )
-            except IntegrityError as err:
-                print(err)
+            self.store_rects()
 
         # Clear the rect list for a new scene
         self.rect_list = []
@@ -98,3 +85,19 @@ class GraphicsScene(QGraphicsScene):
                 color = QColor(rect[6])
                 # rect[1] is class label
                 self.new_tag_signal.emit([loaded_rect, rect[1], color])
+
+    def store_rects(self):
+        try:  # try except to skip duplicates
+            for rect in self.rect_list:
+                # Insert any frames in rect list into sql storage
+                self.sql_storage.insert_rect_record(
+                    self.current_frame,
+                    rect[1],
+                    rect[0].topLeft().x(),
+                    rect[0].topLeft().y(),
+                    rect[0].width(),
+                    rect[0].height(),
+                    rect[2].name()
+                )
+        except IntegrityError as err:
+            print(err)

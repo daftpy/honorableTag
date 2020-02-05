@@ -197,6 +197,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.FrameView.DrawScene.get_frame(frame)
 
     def export_frames(self):
+        self.FrameView.DrawScene.store_rects()
         rows = self.FrameView.DrawScene.sql_storage.get_all_rects()
         class_list = [
             str(self.ClassLabelList.item(i).label)
@@ -210,6 +211,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.ExportWindow.show()
 
     def export_to_csv(self, file_name):
+        self.FrameView.DrawScene.store_rects()
         class_list = [
             f'{self.ClassLabelList.item(i).label}'
             f' - {self.ClassLabelList.item(i).color.name()}'

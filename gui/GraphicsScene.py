@@ -2,7 +2,7 @@ from sqlite3 import IntegrityError
 from PyQt5.QtWidgets import QGraphicsScene
 from PyQt5.QtGui import QImage, QPen, QPixmap, QColor
 from PyQt5.QtCore import Qt, pyqtSignal, QRect
-from SqlStorage import SqlStorage
+from helpers.SqlStorage import SqlStorage
 
 
 class GraphicsScene(QGraphicsScene):

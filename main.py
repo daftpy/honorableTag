@@ -3,7 +3,7 @@ import re
 from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidgetItem
 from PyQt5.QtGui import QColor
 from PyQt5.QtCore import Qt
-from GuiFile import Ui_MainWindow
+from gui.GuiFile import Ui_MainWindow
 from gui.ClassLabel import ClassLabel
 from gui.ExportWindow import ExportWindow
 from helpers.file_helpers import load_video_file,\

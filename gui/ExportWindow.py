@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtCore import Qt
-from ExportGuiFile import Ui_MainWindow
+from gui.ExportGuiFile import Ui_MainWindow
 from PyQt5.QtCore import pyqtSignal
 
 

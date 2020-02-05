@@ -67,6 +67,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.ExportWindow.csv_load_signal.connect(
             lambda x: self.load_from_csv(x)
         )
+        self.ExportWindow.save_to_web_signal.connect(
+            lambda x: self.save_to_webserver(x)
+        )
 
     def load_video(self, videofile=None):
         if videofile:
@@ -217,10 +220,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             f' - {self.ClassLabelList.item(i).color.name()}'
             for i in range(self.ClassLabelList.count())
         ]
-        self.FrameView.DrawScene.sql_storage.export_db_to_csv(
+        csv = self.FrameView.DrawScene.sql_storage.export_db_to_csv(
             file_name,
             class_list
         )
+        return csv
 
     def load_from_csv(self, file_name):
         self.ClassLabelList.clear()
@@ -232,7 +236,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             label = ClassLabel(class_label[0], color=QColor(class_label[1]))
             label.add_color_text()
             self.ClassLabelList.addItem(label)
-        tagged_frames = self.FrameView.DrawScene.sql_storage.get_all_tagged_frames()
+        tagged_frames \
+            = self.FrameView.DrawScene.sql_storage.get_all_tagged_frames()
         for frame in tagged_frames:
             # If frame is not in the TaggedFrameList already, add it
             exists = self.TaggedFrameList.findItems(
@@ -254,6 +259,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         ordered_frame_list = sorted(frame_list, key=lambda h: int(h[7:]))
         self.TaggedFrameList.clear()
         self.TaggedFrameList.addItems(ordered_frame_list)
+
+    def save_to_webserver(self, data):
+        csv = self.export_to_csv(data[3].strip(' '))
+        self.FrameView.DrawScene.sql_storage.save_to_web(
+            csv, data[0], (data[1], data[2]), data[3]
+        )
 
 
 app = QApplication(sys.argv)

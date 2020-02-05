@@ -42,7 +42,7 @@
           <layout class="QFormLayout" name="formLayout_2"/>
          </item>
          <item row="2" column="1">
-          <widget class="QLineEdit" name="lineEdit_2">
+          <widget class="QLineEdit" name="ServerAddressLineEdit">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -87,7 +87,7 @@
           </widget>
          </item>
          <item row="3" column="1">
-          <widget class="QLineEdit" name="lineEdit_3">
+          <widget class="QLineEdit" name="ServerUsernameLineEdit">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -109,7 +109,7 @@
           </widget>
          </item>
          <item row="4" column="1">
-          <widget class="QLineEdit" name="lineEdit_4">
+          <widget class="QLineEdit" name="ServerPasswordLineEdit">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -120,6 +120,9 @@
             <font>
              <pointsize>10</pointsize>
             </font>
+           </property>
+           <property name="echoMode">
+            <enum>QLineEdit::Password</enum>
            </property>
           </widget>
          </item>
@@ -152,7 +155,7 @@
           <layout class="QFormLayout" name="formLayout_5"/>
          </item>
          <item row="1" column="1">
-          <widget class="QLineEdit" name="lineEdit">
+          <widget class="QLineEdit" name="RepoNameLineEdit">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -233,7 +236,7 @@
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_4">
          <item>
-          <widget class="QPushButton" name="pushButton">
+          <widget class="QPushButton" name="SaveToWebButton">
            <property name="text">
             <string>Save to Web Repo</string>
            </property>

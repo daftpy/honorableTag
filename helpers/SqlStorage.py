@@ -1,5 +1,6 @@
 import sqlite3
 import csv
+import requests
 
 
 class SqlStorage():
@@ -52,6 +53,7 @@ class SqlStorage():
         csv_writer = csv.writer(open(f'{file_name}.csv', 'w', newline=''))
         csv_writer.writerow(class_list)
         csv_writer.writerows(rows)
+        return f'{file_name}.csv'
 
     def load_csv_to_db(self, file_name):
         with open(f'{file_name}.csv') as f:
@@ -63,3 +65,33 @@ class SqlStorage():
                     row
                 )
         return class_list
+
+    def save_to_web(self, csv, address, auth, title):
+        LOGIN_URL = f'{address}/login/'
+        ADD_URL = f'{address}/repo/add/'
+
+        rqst = requests.session()
+        rsp = rqst.get(LOGIN_URL)
+
+        token = rsp.cookies['csrftoken']
+
+        rsp = rqst.post(LOGIN_URL, 
+                data={'username': auth[0], 'password': auth[1],  # <---- HERE IS FIX
+                'csrfmiddlewaretoken':token, 'next':'/'})
+
+        rsp = rqst.get(ADD_URL)
+        token = rsp.cookies['csrftoken']
+        print(token)
+
+        with open(csv, 'rb') as payload:
+            test_data = {
+                'repo_name': title,
+                'repo_description': 'Set your description',
+                'csrfmiddlewaretoken': token, 'next': '/'
+            }
+            print(test_data)
+            rsp = rqst.post(
+                ADD_URL,
+                data=test_data,
+                files={'upload': payload}
+            )

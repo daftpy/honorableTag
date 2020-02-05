@@ -8,6 +8,8 @@ Basics functionality implemented including class labeling, pan & zoom, SQL stora
 
 ![Labeling Feature](https://media.giphy.com/media/fYC5IGe6ApmXwRgncP/giphy.gif)
 
+![Saving Loading](https://media.giphy.com/media/VbcFlzSvE1VB6iSbXQ/giphy.gif)
+
 # Installation
 Make sure conda-forge is appended to your conda config channels before moving forward with installation.
 
@@ -41,5 +43,4 @@ Writing more tests is on the todo list. To run the tests that are available, use
 
 1. Implement more testing
 2. Color change feature
-3. Project/Save feature
-4. Learn to make better README files
+3. Learn to make better README files
